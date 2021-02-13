@@ -1,0 +1,9 @@
+form: COPYBOOK
+id: 'CAP-API-DATA-REQUEST'
+values: 
+- name: 'CAP-API-REQUEST-KEY'
+  maxLength: 23
+  values: 
+  - { name: 'CAP-API-REQUEST-METHOD', type: String, length: 8 }
+  - { name: 'CAP-API-REQ-ACCOUNT-NO', type: Integer, length: 15, format: { justify: ZEROES, sign: UNSIGNED } }
+- { name: 'CAP-API-LOGIN-ID', type: String, length: 8 }

@@ -1,0 +1,40 @@
+form: COPYBOOK
+id: 'CAP-API-DATA-RESPONSE'
+values: 
+- name: 'CAP-API-DATA-RESPONSE1'
+  maxLength: 401
+  values: 
+  - { name: 'CAP-API-RETURN-CODE', type: String, length: 4 }
+  - { name: 'CAP-API-RETURN-MSG', type: String, length: 50 }
+  - name: 'CAP-API-ACCOUNT-NUMBER'
+    maxLength: 15
+    values: 
+    - { name: 'CAP-API-PCID-NUMBER', type: String, length: 8 }
+    - { name: 'CAP-API-PCID-SEQ', type: String, length: 3 }
+    - { name: 'CAP-API-MRA-SEQ', type: String, length: 3 }
+    - { name: 'CAP-API-CK-DIGIT', type: String, length: 1 }
+  - { name: 'CAP-API-FIRST-NAME', type: String, length: 12 }
+  - { name: 'CAP-API-LAST-NAME', type: String, length: 20 }
+  - { name: 'CAP-API-CUST-PHONE', type: String, length: 12 }
+  - name: 'CAP-API-CUST-ADDRESS'
+    maxLength: 82
+    values: 
+    - { name: 'CAP-API-STREET-ADDRESS', type: String, length: 33 }
+    - { name: 'CAP-API-CITY', type: String, length: 20 }
+    - { name: 'CAP-API-STATE', type: String, length: 20 }
+    - { name: 'CAP-API-ZIP9', type: String, length: 9 }
+  - { name: 'CAP-API-REV-CLASS-CD', type: String, length: 2 }
+  - { name: 'CAP-API-ACCT-STAT-CD', type: String, length: 2 }
+  - { name: 'CAP-API-ACCT-STAT-DESC', type: String, length: 8 }
+  - { name: 'CAP-API-CURR-ACCT-BAL', type: String, length: 20 }
+  - { name: 'CAP-API-LIHEAP-PLUS-AMT', type: String, length: 20 }
+  - { name: 'CAP-API-CAP-AMT-OWED', type: String, length: 20 }
+  - { name: 'CAP-API-AVG-MTHLY-PYMT', type: String, length: 20 }
+  - { name: 'CAP-API-PCT-OF-BUD-AMT', type: String, length: 20 }
+  - { name: 'CAP-API-CAP-STAT-CD', type: String, length: 1 }
+  - { name: 'CAP-API-CAP-STAT-DESC', type: String, length: 10 }
+  - { name: 'CAP-API-REMOVAL-RSN', type: String, length: 3 }
+  - { name: 'CAP-API-REMOVAL-DT', type: String, length: 10 }
+  - { name: 'CAP-API-SHUT-OFF-DT', type: String, length: 10 }
+  - { name: 'CAP-API-LAST-ASST-DT', type: String, length: 10 }
+  - { name: 'FILLER1', usage: U, type: String, length: 50 }

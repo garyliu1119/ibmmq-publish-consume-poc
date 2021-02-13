@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="Copybook" format="copybook">
+      <types:shape format="copybook" element="CAP-API-DATA-REQUEST" location="schemas/DIS.ffd"/>
+    </types:type>
+    <types:type name="responsecopybook" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="ResponseCopybook" format="copybook">
+      <types:shape format="copybook" element="CAP-API-DATA-RESPONSE" location="schemas/mainframe-copybook-de.ffd"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#8a039c0e-4696-4953-9e8c-3a4ac8d05db4">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="Copybook"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a97daba1-c726-4876-a442-c4cec29661d8">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="ResponseCopybook"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

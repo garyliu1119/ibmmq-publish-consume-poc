@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/ibm-mq/current/mule-ibm-mq.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+ 	
+	<ibm-mq:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="a8342c4d-bab2-466c-b194-a26f621b8e32" sendCorrelationId="ALWAYS">
+		<ibm-mq:connection targetClient="NO_JMS_COMPLIANT">
+			<ibm-mq:connection-mode >
+				<ibm-mq:client host="10.100.0.1" port="1420" queueManager="CSQ1" channel="NES.TSTF.CSQ1.SVRCNN" />
+			</ibm-mq:connection-mode>
+		</ibm-mq:connection>
+	</ibm-mq:config>	
+		
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="df19b926-03cb-447e-81d1-1fd5dc6062d6" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	
+	<flow name="publish-consume" doc:id="cc4433cd-64a2-40ad-8d52-d941e96254aa" >
+		<http:listener doc:name="Listener" doc:id="f35641ca-e3d8-49d9-99da-0b0375b8cb49" config-ref="HTTP_Listener_config" path="/ibmmq/synccall">
+		</http:listener>
+		<ee:transform doc:name="Transform Message" doc:id="0cf6741c-292a-474c-bbf3-57ff32a9dcb7" >
+			<ee:message >
+				<ee:set-payload resource="dwl/process-request.dwl" />
+			</ee:message>
+		</ee:transform>
+
+		<java:invoke-static method="encodeToEBCDIC(java.lang.String)" doc:name="Invoke static" doc:id="9c96c2f5-1116-4d70-8923-9b6086dde3b0" 
+			class="com.nisource.mule.EncodeToEbcdic" 
+			target="corrId">
+				<java:args >#[{correlationId: correlationId}]</java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="7ee097a2-62fc-4038-bc44-7d1b5207a72c" message='#["correlationId == " ++ correlationId]'/>
+		
+		<try doc:name="Try" doc:id="e6caae90-406d-4cfb-b265-05769801541b" >
+		
+			<ibm-mq:publish-consume doc:name="Publish consume" doc:id="20007e50-379b-4c27-841e-4abf4d88bfcc" 
+				config-ref="IBM_MQ_Config" 
+				destination="CSQ1.NES.DIS.CAP.REQ" 
+				sendCorrelationId="AUTO">
+				
+				<ibm-mq:message outboundContentType="text/plain" outboundEncoding="CP1047" correlationId="#[vars.corrId]">
+					<ibm-mq:reply-to destination="CSQ1.DIS.NES.CAP.RSP" />
+				</ibm-mq:message>
+				
+				<ibm-mq:publish-configuration persistentDelivery="true" disableMessageId="false" disableMessageTimestamp="false" />
+				
+				<ibm-mq:consume-configuration 
+					maximumWait="30" 
+					maximumWaitUnit="SECONDS" 
+					inboundContentType="text/plain" 
+					inboundEncoding="CP1047" 
+					ackMode="IMMEDIATE"/>
+					
+			</ibm-mq:publish-consume>
+			
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bcb4a457-6786-4a6c-9cd4-e83cd61b4cf4" type="ANY">
+					<logger level="INFO" doc:name="Logger" doc:id="612cfe30-08e2-4c06-8aa3-906441a30b58" message='#[error.description]'/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="d0375637-ded7-4c82-962d-f33d3b8c616d" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="a97daba1-c726-4876-a442-c4cec29661d8" >
+			<ee:message >
+				<ee:set-payload resource="dwl/process-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="fff3b1fd-10bf-406a-a1d8-70d5581c0474" message="#[payload]" category="PUBLISH_CONSUME_PATTERN"/>
+	</flow>
+</mule>
