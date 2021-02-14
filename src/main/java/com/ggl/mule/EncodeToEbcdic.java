@@ -1,4 +1,4 @@
-package com.nisource.mule;
+package com.ggl.mule;
 
 import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;

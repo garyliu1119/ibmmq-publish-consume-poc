@@ -30,9 +30,9 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 		</ee:transform>
 
 		<java:invoke-static method="encodeToEBCDIC(java.lang.String)" doc:name="Invoke static" doc:id="9c96c2f5-1116-4d70-8923-9b6086dde3b0" 
-			class="com.nisource.mule.EncodeToEbcdic" 
+			class="com.ggl.mule.EncodeToEbcdic" 
 			target="corrId">
-				<java:args >#[{correlationId: correlationId}]</java:args>
+				<java:args ><![CDATA[#[{correlationId: correlationId}]]]></java:args>
 		</java:invoke-static>
 		<logger level="INFO" doc:name="Logger" doc:id="7ee097a2-62fc-4038-bc44-7d1b5207a72c" message='#["correlationId == " ++ correlationId]'/>
 		
